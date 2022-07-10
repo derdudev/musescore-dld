@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+    "name": "musescore-dld",
+    "version": "1.0",
+    "description": "Downloader for sheet music on musescore",
+    "homepage_url": "https://github.com/mdn/webextensions-examples/tree/master/beastify",
+    "icons": {
+        "48": "icons/musescore-ico-48.png"
+    },
+
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "unlimitedStorage",
+        "storage",
+        "downloads"
+    ],
+
+    "browser_action": {
+        "default_icon": "icons/musescore-ico-32.png",
+        "default_title": "MusescoreDLD",
+        "default_popup": "popup/dld-menu.html"
+    }
+}

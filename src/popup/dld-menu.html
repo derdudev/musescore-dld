@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="dld-menu.css"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    </head>
+
+    <body>
+        <div id="popup-content">
+            <div class="header">MusescoreDLD</div>
+            <div class="header-description">for musescore version 6.</div>
+            <div class="page-info">
+                <div class="tags">
+                    <div class="tag">Title:</div>
+                    <div class="tag">Artist:</div>
+                    <div class="tag">Pages:</div>
+                    <div class="tag">File name:</div>
+                </div>
+                <div class="tags-content">
+                    <div class="tag-content" id="title">River flows in you</div>
+                    <div class="tag-content" id="artist">Yiruma</div>
+                    <div class="tag-content" id="page-num">4</div>
+                    <div class="tag-content" id="file-name">...</div>
+                </div>
+            </div>
+            <div id="page-content"></div>
+            <div class="btn-container">
+                <div id="dld-btn">Download</div>
+            </div>
+            <div id="message"></div>
+        </div>
+        <div id="error-content" class="hidden">
+            <p>Can't beastify this web page.</p>
+            <p>Try a different page.</p>
+        </div>
+
+        <canvas id="virtual-canvas" style="display: none"></canvas>
+        
+        <script type="text/javascript" src="jspdf.umd.js"></script>
+        <script type="text/javascript" src="dld-menu.js"></script>
+    </body>
+
+</html>
