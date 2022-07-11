@@ -19,7 +19,7 @@ const getSheetDataURL = async (url) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify({url: url}),
     })
         .then(r => r.json())
         .then(resBody => resBody.dataURL)
