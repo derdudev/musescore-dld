@@ -1,7 +1,6 @@
 const dldBtn = document.getElementById("dld-btn");
 const message = document.getElementById("message");
 const pageContent = document.getElementById("page-content");
-const virtualCanvas = document.getElementById("virtual-canvas");
 
 // Default export is a4 paper, portrait, using millimeters for units
 try {
@@ -12,6 +11,21 @@ try {
 } catch (error) {
     message.innerText = error;
 }
+
+// for promise event handling see: http://stackoverflow.com/questions/37854355/ddg#56341485
+// const getSheetDataURL = async (url) => {
+//     let virtualImg = new Image();
+//     const imgLoadPromise = new Promise(resolve => {
+//         virtualImg.onload = () => {
+//             virtualCanvasCtx.drawImage(virtualImg, 0, 0);
+//         }
+//         virtualImg.src = url;
+//     });
+
+//     await imgLoadPromise;
+//     let dataURL = virtualCanvas.toDataURL();
+//     return dataURL;
+// }
 
 // check if score is already in local storage based on score ID
 
