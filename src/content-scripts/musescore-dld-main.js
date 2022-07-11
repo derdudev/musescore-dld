@@ -41,7 +41,7 @@
                 msgData.push(pages[j].src);
             }
 
-            console.log(msgData, msgData.length);
+            // console.log(msgData, msgData.length);
 
             browser.runtime.sendMessage({
                 command: "pages",
@@ -68,13 +68,11 @@
                         if(scroller.children[i].children.length != 0 && !pages[i].scraped) {
                             currentSheet = scroller.children[i].children[0];
                             if(currentSheet.src != "") {
-                                console.log("sync");
                                 pages[i].src = currentSheet.src;
                                 pages[i].scraped = true;
                             }
                             else {
-                                currentSheet.onload = async () => {
-                                    console.log("async");
+                                currentSheet.onload = () => {
                                     pages[i].src = currentSheet.src;
                                     pages[i].scraped = true;
                                 }
@@ -84,7 +82,7 @@
                 } else {
                     pages[lastPageIndex].src = scroller.children[lastPageIndex].children[0].src;
                     if(pages[lastPageIndex].src == "") {
-                        scroller.children[i].children[0].onload = () => {
+                        scroller.children[lastPageIndex].children[0].onload = () => {
                             pages[lastPageIndex].src = scroller.children[lastPageIndex].children[0].src;
                             pages[lastPageIndex].scraped = true;
                             sendToEx();

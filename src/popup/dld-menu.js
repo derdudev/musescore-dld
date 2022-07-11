@@ -12,20 +12,19 @@ try {
     message.innerText = error;
 }
 
-// for promise event handling see: http://stackoverflow.com/questions/37854355/ddg#56341485
-// const getSheetDataURL = async (url) => {
-//     let virtualImg = new Image();
-//     const imgLoadPromise = new Promise(resolve => {
-//         virtualImg.onload = () => {
-//             virtualCanvasCtx.drawImage(virtualImg, 0, 0);
-//         }
-//         virtualImg.src = url;
-//     });
-
-//     await imgLoadPromise;
-//     let dataURL = virtualCanvas.toDataURL();
-//     return dataURL;
-// }
+const getSheetDataURL = async (url) => {
+    message.innerText = url;
+    return fetch("https://msdld.mertz-es.de/", {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+    })
+        .then(r => r.json())
+        .then(resBody => resBody.dataURL)
+        .catch(e => message.innerText = e)
+}
 
 // check if score is already in local storage based on score ID
 
@@ -115,6 +114,7 @@ browser.tabs.query({active: true, currentWindow: true})
                                     browser.storage.local.set(storeData);
 
                                     let dataURL = createHTML(JSON.parse(msg.data).info, JSON.parse(msg.data).sheets);
+                                    getSheetDataURL(JSON.parse(msg.data).sheets[0]);
 
                                     dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(msg.data).info, dataURL)});
                                 }
