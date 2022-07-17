@@ -2,8 +2,8 @@
     let scroller = document.getElementById("jmuse-scroller-component");
 
     if(scroller){
-        let title = document.getElementsByClassName("_13XTP _1eJPh _2Ovu-")[0];
-        let artist = document.getElementsByClassName("_1Uhe3 _2yieq _2YIuG _3LaBc")[0].children[1].children[0];
+        let title = document.getElementsByClassName("C4LKv DIiWA Pz1rt")[0];
+        let artist = document.getElementsByClassName("ASx44 AJXCt Bz0hi g1QZl")[0].children[1].children[0];
 
         let info = {
             title: title.innerText,

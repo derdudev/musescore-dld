@@ -14,10 +14,11 @@ try {
 
 const getSheetDataURL = async (url) => {
     message.innerText = url;
-    return fetch("https://msdld.mertz-es.de/", {
-        method: 'POST', // or 'PUT'
+    return fetch("https://msdld.mertz-es.de", {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            "Accept": '*/*'
         },
         body: JSON.stringify({url: url}),
     })
