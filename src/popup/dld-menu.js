@@ -70,15 +70,17 @@ browser.tabs.query({active: true, currentWindow: true})
 
                     file.appendChild(body);
 
+                    message.innerText = "<html>"+file.innerHTML+"</html>";
                     let url = URL.createObjectURL(new Blob(["<html>"+file.innerHTML+"</html>"]));
-
                     return url;
                 }
 
                 const downloadFile = (info, objectURL) => {
+                    console.log(objectURL);
                     browser.downloads.download({url: objectURL, filename: info.title + " - " + info.artist + ".html"});
 
-                    browser.downloads.onChanged.addListener(()=>{
+                    browser.downloads.onChanged.addListener(({state})=>{
+                        message.innerHTML = state.current;
                         URL.revokeObjectURL(objectURL);
                     });
                 }
@@ -107,17 +109,20 @@ browser.tabs.query({active: true, currentWindow: true})
                                 if(msg.command == "page-info"){
                                     displayInfo(msg.data);
                                 } else if (msg.command == "pages"){
-                                    displayPages(JSON.parse(msg.data).sheets);
+                                    (async function () {
+                                        displayPages(JSON.parse(msg.data).sheets);
                             
-                                    let storeData = {};
-                                    storeData["msdld-"+scoreID] = msg.data;
+                                        let storeData = {};
+                                        storeData["msdld-"+scoreID] = msg.data;
 
-                                    browser.storage.local.set(storeData);
+                                        browser.storage.local.set(storeData);
 
-                                    let dataURL = createHTML(JSON.parse(msg.data).info, JSON.parse(msg.data).sheets);
-                                    getSheetDataURL(JSON.parse(msg.data).sheets[0]);
-
-                                    dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(msg.data).info, dataURL)});
+                                        let sheets = JSON.parse(msg.data).sheets;
+                                        sheets[0] = await getSheetDataURL(JSON.parse(msg.data).sheets[0]);
+                                        let dataURL = createHTML(JSON.parse(msg.data).info, sheets);
+                                        
+                                        dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(msg.data).info, dataURL)});
+                                    })();
                                 }
                             })
                         }

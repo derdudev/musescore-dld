@@ -90,7 +90,7 @@
                         }
                     } else {
                         pages[lastPageIndex].scraped = true;
-                        sendToEx();
+                        // sendToEx();
                         clearInterval(id);
                     }
                 }
