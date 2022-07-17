@@ -72,7 +72,6 @@ browser.tabs.query({active: true, currentWindow: true})
 
                     file.appendChild(body);
 
-                    message.innerText = "<html>"+file.innerHTML+"</html>";
                     let url = URL.createObjectURL(new Blob(["<html>"+file.innerHTML+"</html>"]));
                     return url;
                 }
@@ -90,18 +89,14 @@ browser.tabs.query({active: true, currentWindow: true})
                 browser.storage.local.get("msdld-"+scoreID)
                     .then((promiseData) => {
                         let storageData = (Object.entries(promiseData) == 0) ? null : promiseData["msdld-"+scoreID];
-                        message.innerText = JSON.stringify(promiseData);
+
                         if(storageData){
-                            try {
-                                displayPages(JSON.parse(storageData).sheets);
-                                displayInfo(JSON.parse(storageData).info);
+                            displayPages(JSON.parse(storageData).sheets);
+                            displayInfo(JSON.parse(storageData).info);
 
-                                let dataURL = createHTML(JSON.parse(storageData).info, JSON.parse(storageData).sheets);
+                            let dataURL = createHTML(JSON.parse(storageData).info, JSON.parse(storageData).sheets);
 
-                                dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(storageData).info, dataURL)});
-                            } catch (error) {
-                                message.innerText = error;
-                            }
+                            dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(storageData).info, dataURL)});
                         } else {
                             browser.tabs
                                 .executeScript({ file: "/content-scripts/musescore-dld-main.js" })
@@ -112,20 +107,23 @@ browser.tabs.query({active: true, currentWindow: true})
                                     displayInfo(msg.data);
                                 } else if (msg.command == "pages"){
                                     let sheets = JSON.parse(msg.data).sheets;
-                                    fileType = sheets[0].match(/(?<=https\:\/\/musescore\.com\/static\/musescore\/scoredata\/g\/\w+\/score_0.).{3}/);
+                                    fileType = sheets[0].match(/(?<=https\:\/\/musescore\.com\/static\/musescore\/scoredata\/g\/\w+\/score_0.).{3}/)[0];  
 
                                     (async function () {
                                         displayPages(sheets);
-                            
-                                        let storeData = {};
-                                        storeData["msdld-"+scoreID] = msg.data;
-
-                                        browser.storage.local.set(storeData);
-
+                                        
                                         let sheetsDataURLs = [];
                                         for(let i=0; i<sheets.length; i++){
                                             sheetsDataURLs[i] = await getSheetDataURL(sheets[i], fileType);
                                         }
+                            
+                                        let storeData = {};
+                                        storeData["msdld-"+scoreID] = JSON.stringify({
+                                            info: JSON.parse(msg.data).info, 
+                                            sheets: sheetsDataURLs
+                                        });
+
+                                        browser.storage.local.set(storeData); 
 
                                         let dataURL = createHTML(JSON.parse(msg.data).info, sheetsDataURLs);
                                         
