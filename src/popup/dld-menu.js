@@ -12,7 +12,7 @@ try {
     message.innerText = error;
 }
 
-const getSheetDataURL = async (url) => {
+const getSheetDataURL = async (url, fileType) => {
     message.innerText = url;
     return fetch("https://msdld.mertz-es.de", {
         method: 'POST',
@@ -20,7 +20,7 @@ const getSheetDataURL = async (url) => {
             'Content-Type': 'application/json',
             "Accept": '*/*'
         },
-        body: JSON.stringify({url: url}),
+        body: JSON.stringify({url: url, ft: fileType}),
     })
         .then(r => r.json())
         .then(resBody => resBody.dataURL)
@@ -37,6 +37,8 @@ browser.tabs.query({active: true, currentWindow: true})
                 if(scoreID == null){
                     scoreID = tab.url.match(/(?<=https\:\/\/musescore\.com\/\w+\/scores\/).+/);
                 }
+
+                let fileType = "";
 
                 const displayPages = (data) => {
                     let page;
@@ -109,17 +111,23 @@ browser.tabs.query({active: true, currentWindow: true})
                                 if(msg.command == "page-info"){
                                     displayInfo(msg.data);
                                 } else if (msg.command == "pages"){
+                                    let sheets = JSON.parse(msg.data).sheets;
+                                    fileType = sheets[0].match(/(?<=https\:\/\/musescore\.com\/static\/musescore\/scoredata\/g\/\w+\/score_0.).{3}/);
+
                                     (async function () {
-                                        displayPages(JSON.parse(msg.data).sheets);
+                                        displayPages(sheets);
                             
                                         let storeData = {};
                                         storeData["msdld-"+scoreID] = msg.data;
 
                                         browser.storage.local.set(storeData);
 
-                                        let sheets = JSON.parse(msg.data).sheets;
-                                        sheets[0] = await getSheetDataURL(JSON.parse(msg.data).sheets[0]);
-                                        let dataURL = createHTML(JSON.parse(msg.data).info, sheets);
+                                        let sheetsDataURLs = [];
+                                        for(let i=0; i<sheets.length; i++){
+                                            sheetsDataURLs[i] = await getSheetDataURL(sheets[i], fileType);
+                                        }
+
+                                        let dataURL = createHTML(JSON.parse(msg.data).info, sheetsDataURLs);
                                         
                                         dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(msg.data).info, dataURL)});
                                     })();

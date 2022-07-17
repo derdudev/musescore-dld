@@ -8,7 +8,7 @@
         let info = {
             title: title.innerText,
             artist: artist.innerText,
-            pages: document.getElementsByClassName("vAVs3").length
+            pages: document.getElementsByClassName("BmIOX").length
         }
 
         browser.runtime.sendMessage({
