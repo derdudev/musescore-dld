@@ -1,16 +1,11 @@
+const { jsPDF } = window.jspdf;
+
 const dldBtn = document.getElementById("dld-btn");
 const message = document.getElementById("message");
 const pageContent = document.getElementById("page-content");
 
 // Default export is a4 paper, portrait, using millimeters for units
-try {
-    const doc = new jspdf.jsPDF();
-
-    // doc.text("Hello world!", 10, 10);
-    // doc.save("a4.pdf");
-} catch (error) {
-    message.innerText = error;
-}
+const doc = new jsPDF();
 
 const getSheetDataURL = async (url, fileType) => {
     message.innerText = url;
@@ -25,6 +20,21 @@ const getSheetDataURL = async (url, fileType) => {
         .then(r => r.json())
         .then(resBody => resBody.dataURL)
         .catch(e => message.innerText = e)
+}
+
+// https://stackoverflow.com/questions/5913338/embedding-svg-in-pdf-exporting-svg-to-pdf-using-js
+function downloadPDF(svg, outFileName) {
+    let doc = new PDFDocument({compress: false, size:"A4"});
+    SVGtoPDF(doc, svg, 0, 0);
+    let stream = doc.pipe(blobStream());
+    stream.on('finish', () => {
+      let blob = stream.toBlob('application/pdf');
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = outFileName + ".pdf";
+      link.click();
+    });
+    doc.end();
 }
 
 // check if score is already in local storage based on score ID
@@ -62,15 +72,46 @@ browser.tabs.query({active: true, currentWindow: true})
                 const createHTML = (info, sheets) => {
                     let file = document.createElement("html");
                     let body = document.createElement("body");
+                    let page;
 
+                    let tempSVG;
                     for(let i=0; i<sheets.length; i++){
                         page = document.createElement("img");
                         page.src = sheets[i];
                         page.style.height = "100vh"; 
                         body.appendChild(page);
+
+                        if(info.fileType == "png") {
+                            doc.addImage(sheets[i], 0, 0, 210, 297, "", 'NONE');
+                        }
+                        else {
+                            // doc.addSvgAsImage(atob(sheets[i].match(/(?<=data:image\/svg\+xml;base64,).*/)), 0, 0, 20, 29, "", 'NONE');
+                            tempSVG = document.createElement("div");
+                            tempSVG.innerHTML = atob(sheets[i].match(/(?<=data:image\/svg\+xml;base64,).*/));
+                            
+                            console.log(tempSVG.firstChild);
+                            let width = tempSVG.firstChild.getAttribute("width");
+                            let height = tempSVG.firstChild.getAttribute("height");
+
+                            tempSVG.firstChild.setAttribute("width", "");
+                            tempSVG.firstChild.setAttribute("height", "");
+                            tempSVG.firstChild.setAttribute("viewBox", "0 0 " + width + " " + height);
+
+                            console.log(tempSVG.firstChild);
+
+                            downloadPDF(tempSVG.children[0], "t")
+                        }
+                        doc.addPage();
                     }
 
                     file.appendChild(body);
+
+                    // doc.html(body, {
+                    //     callback: (d) => {
+                    //         d.save();
+                    //     }
+                    // });
+                    // doc.save("a4.pdf");
 
                     let url = URL.createObjectURL(new Blob(["<html>"+file.innerHTML+"</html>"]));
                     return url;
@@ -90,6 +131,7 @@ browser.tabs.query({active: true, currentWindow: true})
                     .then((promiseData) => {
                         let storageData = (Object.entries(promiseData) == 0) ? null : promiseData["msdld-"+scoreID];
 
+                        console.log(JSON.parse(storageData));
                         if(storageData){
                             displayPages(JSON.parse(storageData).sheets);
                             displayInfo(JSON.parse(storageData).info);
@@ -116,16 +158,21 @@ browser.tabs.query({active: true, currentWindow: true})
                                         for(let i=0; i<sheets.length; i++){
                                             sheetsDataURLs[i] = await getSheetDataURL(sheets[i], fileType);
                                         }
+
+                                        let infoFT = JSON.parse(msg.data).info;
+                                        infoFT.fileType = fileType;
+
+                                        console.log(infoFT, JSON.parse(msg.data));
                             
                                         let storeData = {};
                                         storeData["msdld-"+scoreID] = JSON.stringify({
-                                            info: JSON.parse(msg.data).info, 
+                                            info: infoFT, 
                                             sheets: sheetsDataURLs
                                         });
 
                                         browser.storage.local.set(storeData); 
 
-                                        let dataURL = createHTML(JSON.parse(msg.data).info, sheetsDataURLs);
+                                        let dataURL = createHTML(infoFT, sheetsDataURLs);
                                         
                                         dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(msg.data).info, dataURL)});
                                     })();

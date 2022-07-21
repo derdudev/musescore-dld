@@ -4,7 +4,8 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="dld-menu.css"/>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.skypack.dev https://cdn.jsdelivr.net https://bundle.run">
     </head>
 
     <body>
@@ -38,8 +39,19 @@
 
         <canvas id="virtual-canvas" style="display: none"></canvas>
         
-        <script type="text/javascript" src="jspdf.umd.js"></script>
-        <script type="text/javascript" src="dld-menu.js"></script>
+        <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" integrity="sha512-234m/ySxaBP6BRdJ4g7jYG7uI9y2E74dvMua1JzkqM3LyWP43tosIqET873f3m6OQ/0N6TKyqXG4fLeHN9vKkg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.1.5/html2canvas.min.js" integrity="sha512-oQzeC9gIS3sN3QCshVeDWiRCC2tJbR9lqj1rolUtQkGJJeA+7L54y/DVZf0+T3NDZuLOkbInugg7dVNwvcEGow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+        <script src="html2canvas.js"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.9/umd.min.js" integrity="sha512-uFbOsMTwJI9fB3saQ+aHUcHuhRyxxHonT7AWjFL25AglbRxiG7x3+3jDAA9YGVpgrdKRBTBHdSx9Xnyt7VsDNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.10/umd.js" integrity="sha512-XzD6JvbRszCVIgiNU2pgCFnCtHmgu5sDydUMFNeuNkWKCccMYTJLxbe0r+PG4QNeDx7NMcrPWmztn185dHPLPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/pdfkit@0.10.0/js/pdfkit.standalone.js"></script>
+        <script src="https://bundle.run/blob-stream@0.1.3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/svg-to-pdfkit@0.1.8/source.js"></script>
+
+        <script type="module" src="dld-menu.js"></script>
     </body>
 
 </html>
