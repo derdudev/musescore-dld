@@ -1,4 +1,6 @@
-const dldBtn = document.getElementById("dld-btn");
+const dldHtmlBtn = document.getElementById("dld-html-btn");
+const dldPdfBtn = document.getElementById("dld-pdf-btn");
+const printBtn = document.getElementById("print-btn");
 const message = document.getElementById("message");
 const pageContent = document.getElementById("page-content");
 
@@ -57,13 +59,22 @@ browser.tabs.query({active: true, currentWindow: true})
                     let body = document.createElement("body");
                     let page;
 
-                    let tempSVG;
                     for(let i=0; i<sheets.length; i++){
                         page = document.createElement("img");
                         page.src = sheets[i];
                         page.style.height = "100vh"; 
                         body.appendChild(page);
+                    }
 
+                    file.appendChild(body);
+
+                    let url = URL.createObjectURL(new Blob(["<html>"+file.innerHTML+"</html>"]));
+                    return url;
+                }
+
+                const createPDF = (info, sheets) => {
+                    let tempSVG;
+                    for(let i=0; i<sheets.length; i++){
                         if(info.fileType == "png") {
                             docKit.image(sheets[i], 0, 0, {width: 595});
                         }
@@ -91,22 +102,15 @@ browser.tabs.query({active: true, currentWindow: true})
                     let stream = docKit.pipe(blobStream());
                     stream.on('finish', () => {
                         let blob = stream.toBlob('application/pdf');
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.download = "t" + ".pdf";
-                        link.click();
+                        dldPdfBtn.addEventListener("click", ()=>{downloadFile(info, "pdf", URL.createObjectURL(blob))});
+                        dldPdfBtn.classList = "";
                     });
                     docKit.end();
-
-                    file.appendChild(body);
-
-                    let url = URL.createObjectURL(new Blob(["<html>"+file.innerHTML+"</html>"]));
-                    return url;
                 }
 
-                const downloadFile = (info, objectURL) => {
+                const downloadFile = (info, type, objectURL) => {
                     console.log(objectURL);
-                    browser.downloads.download({url: objectURL, filename: info.title + " - " + info.artist + ".html"});
+                    browser.downloads.download({url: objectURL, filename: info.title + " - " + info.artist + ((type == "html") ? ".html" : ".pdf")});
 
                     browser.downloads.onChanged.addListener(({state})=>{
                         message.innerHTML = state.current;
@@ -120,12 +124,15 @@ browser.tabs.query({active: true, currentWindow: true})
 
                         console.log(JSON.parse(storageData));
                         if(storageData){
-                            displayPages(JSON.parse(storageData).sheets);
-                            displayInfo(JSON.parse(storageData).info);
+                            let sheets = JSON.parse(storageData).sheets;
+                            let info = JSON.parse(storageData).info;
 
-                            let dataURL = createHTML(JSON.parse(storageData).info, JSON.parse(storageData).sheets);
+                            displayInfo(info);
+                            displayPages(sheets);
 
-                            dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(storageData).info, dataURL)});
+                            dldHtmlBtn.addEventListener("click", ()=>{downloadFile(info, "html", createHTML(info, sheets))});
+                            createPDF(info, sheets);
+                            dldHtmlBtn.classList = "";
                         } else {
                             browser.tabs
                                 .executeScript({ file: "/content-scripts/musescore-dld-main.js" })
@@ -161,7 +168,8 @@ browser.tabs.query({active: true, currentWindow: true})
 
                                         let dataURL = createHTML(infoFT, sheetsDataURLs);
                                         
-                                        dldBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(msg.data).info, dataURL)});
+                                        dldHtmlBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(msg.data).info, "html", dataURL)});
+                                        dldHtmlBtn.classList = "";
                                     })();
                                 }
                             })

@@ -37,7 +37,8 @@ body {
 }
 
 #page-content{
-    height: 200px;
+    height: fit-content;
+    max-height: 200px;
     width: 300px;
     margin-bottom: 10px;
     background-color: #ffffff50;
@@ -45,19 +46,26 @@ body {
     overflow-y: hidden;
 
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    flex-direction: row;
 }
 
 .sheet{
     max-width: 130px;
 }
 
-.btn-containter{
-    height: 50px;
+.btn-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
 }
 
-#dld-btn{
+.unactive {
+    background-color: #5D6776 !important;
+    cursor: default !important;
+}
+
+#dld-html-btn, #dld-pdf-btn, #print-btn{
     background-color: #2E68C0;
     border-radius: 5px;
     width: 70px;
