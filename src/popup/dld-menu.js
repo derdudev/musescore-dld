@@ -1,11 +1,6 @@
-const { jsPDF } = window.jspdf;
-
 const dldBtn = document.getElementById("dld-btn");
 const message = document.getElementById("message");
 const pageContent = document.getElementById("page-content");
-
-// Default export is a4 paper, portrait, using millimeters for units
-const doc = new jsPDF();
 
 const getSheetDataURL = async (url, fileType) => {
     message.innerText = url;
@@ -22,22 +17,8 @@ const getSheetDataURL = async (url, fileType) => {
         .catch(e => message.innerText = e)
 }
 
-const docKit = new PDFDocument({compress: false, size:"A4"});
-
 // https://stackoverflow.com/questions/5913338/embedding-svg-in-pdf-exporting-svg-to-pdf-using-js
-function downloadPDF(svg, outFileName) {
-    let doc = new PDFDocument({compress: false, size:"A4"});
-    SVGtoPDF(doc, svg, 0, 0);
-    let stream = doc.pipe(blobStream());
-    stream.on('finish', () => {
-      let blob = stream.toBlob('application/pdf');
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = outFileName + ".pdf";
-      link.click();
-    });
-    doc.end();
-}
+const docKit = new PDFDocument({compress: false, size:"A4"});
 
 // check if score is already in local storage based on score ID
 
@@ -84,11 +65,9 @@ browser.tabs.query({active: true, currentWindow: true})
                         body.appendChild(page);
 
                         if(info.fileType == "png") {
-                            // doc.addImage(sheets[i], 0, 0, 210, 297, "", 'NONE');
                             docKit.image(sheets[i], 0, 0, {width: 595});
                         }
                         else {
-                            // doc.addSvgAsImage(atob(sheets[i].match(/(?<=data:image\/svg\+xml;base64,).*/)), 0, 0, 20, 29, "", 'NONE');
                             tempSVG = document.createElement("div");
                             tempSVG.innerHTML = atob(sheets[i].match(/(?<=data:image\/svg\+xml;base64,).*/));
                             
@@ -106,7 +85,6 @@ browser.tabs.query({active: true, currentWindow: true})
                         }
                         if(i < sheets.length-1) {
                             docKit.addPage();
-                            // doc.addPage();
                         }
                     }
 
@@ -121,13 +99,6 @@ browser.tabs.query({active: true, currentWindow: true})
                     docKit.end();
 
                     file.appendChild(body);
-
-                    // doc.html(body, {
-                    //     callback: (d) => {
-                    //         d.save();
-                    //     }
-                    // });
-                    // doc.save("a4.pdf");
 
                     let url = URL.createObjectURL(new Blob(["<html>"+file.innerHTML+"</html>"]));
                     return url;
