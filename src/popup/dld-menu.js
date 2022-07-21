@@ -22,6 +22,8 @@ const getSheetDataURL = async (url, fileType) => {
         .catch(e => message.innerText = e)
 }
 
+const docKit = new PDFDocument({compress: false, size:"A4"});
+
 // https://stackoverflow.com/questions/5913338/embedding-svg-in-pdf-exporting-svg-to-pdf-using-js
 function downloadPDF(svg, outFileName) {
     let doc = new PDFDocument({compress: false, size:"A4"});
@@ -82,7 +84,8 @@ browser.tabs.query({active: true, currentWindow: true})
                         body.appendChild(page);
 
                         if(info.fileType == "png") {
-                            doc.addImage(sheets[i], 0, 0, 210, 297, "", 'NONE');
+                            // doc.addImage(sheets[i], 0, 0, 210, 297, "", 'NONE');
+                            docKit.image(sheets[i], 0, 0, {width: 595});
                         }
                         else {
                             // doc.addSvgAsImage(atob(sheets[i].match(/(?<=data:image\/svg\+xml;base64,).*/)), 0, 0, 20, 29, "", 'NONE');
@@ -99,10 +102,23 @@ browser.tabs.query({active: true, currentWindow: true})
 
                             console.log(tempSVG.firstChild);
 
-                            downloadPDF(tempSVG.children[0], "t")
+                            SVGtoPDF(docKit, tempSVG.firstChild, 0, 0);
                         }
-                        doc.addPage();
+                        if(i < sheets.length-1) {
+                            docKit.addPage();
+                            // doc.addPage();
+                        }
                     }
+
+                    let stream = docKit.pipe(blobStream());
+                    stream.on('finish', () => {
+                        let blob = stream.toBlob('application/pdf');
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = "t" + ".pdf";
+                        link.click();
+                    });
+                    docKit.end();
 
                     file.appendChild(body);
 
