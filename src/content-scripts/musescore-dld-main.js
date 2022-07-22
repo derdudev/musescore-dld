@@ -45,6 +45,7 @@
                 command: "pages",
                 data: JSON.stringify({
                     info: info, 
+                    // TODO: send sheets individually to allow loading progress
                     sheets: msgData
                 })
             });
