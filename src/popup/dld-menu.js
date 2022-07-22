@@ -3,9 +3,45 @@ const dldPdfBtn = document.getElementById("dld-pdf-btn");
 const printBtn = document.getElementById("print-btn");
 const message = document.getElementById("message");
 const pageContent = document.getElementById("page-content");
+const loadingScreen = document.getElementById("loading-container");
+const scanningScreen = document.getElementById("scanning-container");
+const errorScreen = document.getElementById("error-container");
+const errorTitle = errorScreen.children[0];
+const errorMsg = errorScreen.children[1];
+
+/**
+ * 
+ * @param {string} type load or scan
+ * @param {bool} show if the screen is to be shown or not
+ */
+const showScreen = (type, show) => {
+    if (type == "load") {
+        if(show){
+            loadingScreen.classList = "";
+            scanningScreen.classList = "hidden";
+
+        } else {
+            loadingScreen.classList = "hidden";
+        }
+    } else {
+        if(show){
+            scanningScreen.classList = "";
+            loadingScreen.classList = "hidden";
+        } else {
+            scanningScreen.classList = "hidden";
+        }
+    }
+}
+
+const showErrorMsg = (title, msg) => {
+    showScreen("load", false);
+    showScreen("scan", false);
+    errorScreen.classList = "";
+    errorTitle.innerText = title;
+    errorMsg.innerText = msg;
+}
 
 const getSheetDataURL = async (url, fileType) => {
-    message.innerText = url;
     return fetch("https://msdld.mertz-es.de", {
         method: 'POST',
         headers: {
@@ -16,7 +52,7 @@ const getSheetDataURL = async (url, fileType) => {
     })
         .then(r => r.json())
         .then(resBody => resBody.dataURL)
-        .catch(e => message.innerText = e)
+        .catch(e => showErrorMsg("Fetching Error", "Server for fetching data URLs cannot be reached or it does not respond correctly."))
 }
 
 // https://stackoverflow.com/questions/5913338/embedding-svg-in-pdf-exporting-svg-to-pdf-using-js
@@ -113,11 +149,12 @@ browser.tabs.query({active: true, currentWindow: true})
                     browser.downloads.download({url: objectURL, filename: info.title + " - " + info.artist + ((type == "html") ? ".html" : ".pdf")});
 
                     browser.downloads.onChanged.addListener(({state})=>{
-                        message.innerHTML = state.current;
+                        // message.innerHTML = state.current;
                         URL.revokeObjectURL(objectURL);
                     });
                 }
                 
+                showScreen("load", true);
                 browser.storage.local.get("msdld-"+scoreID)
                     .then((promiseData) => {
                         let storageData = (Object.entries(promiseData) == 0) ? null : promiseData["msdld-"+scoreID];
@@ -133,10 +170,12 @@ browser.tabs.query({active: true, currentWindow: true})
                             dldHtmlBtn.addEventListener("click", ()=>{downloadFile(info, "html", createHTML(info, sheets))});
                             createPDF(info, sheets);
                             dldHtmlBtn.classList = "";
+                            showScreen("load", false);
                         } else {
+                            showScreen("scan", true);
                             browser.tabs
                                 .executeScript({ file: "/content-scripts/musescore-dld-main.js" })
-                                .catch((error) => message.innerText = error.message);
+                                .catch((error) => showErrorMsg("Script Error", error.message));
                         
                             browser.runtime.onMessage.addListener((msg) => {
                                 if(msg.command == "page-info"){
@@ -169,7 +208,9 @@ browser.tabs.query({active: true, currentWindow: true})
                                         let dataURL = createHTML(infoFT, sheetsDataURLs);
                                         
                                         dldHtmlBtn.addEventListener("click", ()=>{downloadFile(JSON.parse(msg.data).info, "html", dataURL)});
+                                        createPDF(infoFT, sheetsDataURLs);
                                         dldHtmlBtn.classList = "";
+                                        showScreen("scan", false);
                                     })();
                                 }
                             })

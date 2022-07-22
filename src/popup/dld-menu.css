@@ -92,3 +92,44 @@ body {
 .tag {
     font-weight: bold;
 }
+
+#loading-container, #scanning-container, #error-container{
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: #1A202CDD;
+    backdrop-filter: blur(5px);
+
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#error-container{
+    color: #E53E3E;
+    font-family: "Roboto Mono";
+    flex-direction: column;
+    text-shadow: #1A202C 0 0 5px;
+}
+
+#error-title{
+    font-size: 24px !important;
+    font-weight: bold !important;
+    max-width: 300px;
+}
+
+#error-msg{
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    max-width: 300px;
+}
+
+.hidden{
+    display: none !important;
+}
