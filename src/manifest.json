@@ -22,5 +22,5 @@
         "default_popup": "popup/dld-menu.html"
     },
 
-    "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.skypack.dev https://cdn.jsdelivr.net https://bundle.run; object-src 'self'"
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net https://bundle.run; object-src 'self'"
 }

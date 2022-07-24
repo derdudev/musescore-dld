@@ -1,9 +1,13 @@
+const SCROLLER_ID = "jmuse-scroller-component";
+const TITLE_CL = "C4LKv DIiWA Pz1rt";
+const ARTIST_CL = "ASx44 AJXCt Bz0hi g1QZl";
+
 (function () {
-    let scroller = document.getElementById("jmuse-scroller-component");
+    let scroller = document.getElementById(SCROLLER_ID);
 
     if(scroller){
-        let title = document.getElementsByClassName("C4LKv DIiWA Pz1rt")[0];
-        let artist = document.getElementsByClassName("ASx44 AJXCt Bz0hi g1QZl")[0].children[1].children[0];
+        let title = document.getElementsByClassName(TITLE_CL)[0];
+        let artist = document.getElementsByClassName(ARTIST_CL)[0].children[1].children[0];
 
         let info = {
             title: title.innerText,
@@ -53,7 +57,6 @@
 
         const crawlSheets = () => {
             scroller.scrollTo(0, 0);
-            setTimeout(()=>{}, 10)
             pages[0].src = scroller.children[0].children[0].src;
             pages[0].scraped = true;
             if(document.getElementsByClassName("BmIOX").length != 1){
