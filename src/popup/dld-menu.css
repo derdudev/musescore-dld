@@ -123,3 +123,36 @@
 .hidden{
     display: none !important;
 }
+
+/* NEW POPUP CSS */
+
+.popup{
+    background-color: #1A202C;
+    color: #fff;
+    height: 50vh;
+    width: 50vw;
+    z-index: 102;
+    padding: 40px;
+}
+
+.popup-close{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    z-index: 101;
+    background-color: rgba(0,0,0,.54);
+}
+
+.popup-container{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1051;
+}

@@ -7,55 +7,56 @@
     const DLD_SEC_CL = "lPCDt oJw2k UvTPO XyPHW g1QZl eDGkx";
 
     let scroller = document.getElementById(SCROLLER_ID);
+    let title = document.getElementsByClassName(TITLE_CL)[0].innerText;
+    let artist = document.getElementsByClassName(ARTIST_CL)[0].children[1].children[0].innerText;
+    let pageNum = document.getElementsByClassName("BmIOX").length;
 
-    const dldBtn = document.getElementById(DLD_BTN_ID);
-    const dldSection = document.getElementsByClassName(DLD_SEC_CL)[0];
+    const dldSection = document.getElementsByClassName("js-page react-container")[0].children[0].children[1].children[1].children[0].children[3].children[0];
+    const dldBtn = dldSection.children[0];
 
     let popup = document.createElement("div");
-    popup.style.backgroundColor = "#1A202C";
-    popup.style.color = "#fff";
-    popup.style.height = "50vh";
-    popup.style.width = "50vw";
-    popup.style.zIndex = "102";
-    popup.style.padding = "20px";
+    popup.className = "popup";
 
-    let header = document.createElement("div");
-    header.className = "header";
-    header.innerHTML = "MusescodeDLD";
-    popup.appendChild(header);
+    popup.innerHTML = `
+    <div class="header">MusescoreDLD</div>
+    <div class="header-description">for musescore version 6.</div>
+    <div class="page-info">
+        <div class="tags">
+            <div class="tag">Title:</div>
+            <div class="tag">Artist:</div>
+            <div class="tag">Pages:</div>
+            <div class="tag">File name:</div>
+        </div>
+        <div class="tags-content">
+            <div class="tag-content" id="title">${title}</div>
+            <div class="tag-content" id="artist">${artist}</div>
+            <div class="tag-content" id="page-num">${pageNum}</div>
+            <div class="tag-content" id="file-name">${title + " - " + artist + ".pdf"}</div>
+        </div>
+    </div>
+    <div id="page-content"></div>
+    <div class="btn-container">
+        <div class="unactive" id="dld-html-btn">HTML</div>
+        <div class="unactive" id="dld-pdf-btn">PDF</div>
+        <div class="unactive" id="print-btn"><span class="material-symbols-outlined" style="font-size: 14px;">print</span></div>
+    </div>
+    <div id="message"></div>
+    `
 
     let popupClose = document.createElement("div");
-    popupClose.style.position = "fixed";
-    popupClose.style.top = "0px";
-    popupClose.style.left = "0px";
-    popupClose.style.height = "100vh";
-    popupClose.style.width = "100vw";
-    popupClose.style.zIndex = "101";
-    popupClose.style.backgroundColor = "rgba(0,0,0,.54)";
+    popupClose.className = "popup-close";
     popupClose.onclick = () => {
         popupContainer.style.display = "none";
     }
 
     let popupContainer = document.createElement("div");
-    popupContainer.style.position = "fixed";
-    popupContainer.style.top = "0px";
-    popupContainer.style.left = "0px";
-    popupContainer.style.height = "100vh";
-    popupContainer.style.width = "100vw";
-    popupContainer.style.display = "none";
-    popupContainer.style.justifyContent = "center";
-    popupContainer.style.alignItems = "center";
-    popupContainer.style.zIndex = "1051";
+    popupContainer.className = "popup-container";
     popupContainer.appendChild(popup);
     popupContainer.appendChild(popupClose);
 
     document.body.append(popupContainer);
 
     if(scroller){
-        let title = document.getElementsByClassName(TITLE_CL)[0];
-        let artist = document.getElementsByClassName(ARTIST_CL)[0].children[1].children[0];
-        let pageNum = document.getElementsByClassName("BmIOX").length;
-
         let info = {
             title: title.innerText,
             artist: artist.innerText,
