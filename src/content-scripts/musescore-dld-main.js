@@ -11,6 +11,46 @@
     const dldBtn = document.getElementById(DLD_BTN_ID);
     const dldSection = document.getElementsByClassName(DLD_SEC_CL)[0];
 
+    let popup = document.createElement("div");
+    popup.style.backgroundColor = "#1A202C";
+    popup.style.color = "#fff";
+    popup.style.height = "50vh";
+    popup.style.width = "50vw";
+    popup.style.zIndex = "102";
+    popup.style.padding = "20px";
+
+    let header = document.createElement("div");
+    header.className = "header";
+    header.innerHTML = "MusescodeDLD";
+    popup.appendChild(header);
+
+    let popupClose = document.createElement("div");
+    popupClose.style.position = "fixed";
+    popupClose.style.top = "0px";
+    popupClose.style.left = "0px";
+    popupClose.style.height = "100vh";
+    popupClose.style.width = "100vw";
+    popupClose.style.zIndex = "101";
+    popupClose.style.backgroundColor = "rgba(0,0,0,.54)";
+    popupClose.onclick = () => {
+        popupContainer.style.display = "none";
+    }
+
+    let popupContainer = document.createElement("div");
+    popupContainer.style.position = "fixed";
+    popupContainer.style.top = "0px";
+    popupContainer.style.left = "0px";
+    popupContainer.style.height = "100vh";
+    popupContainer.style.width = "100vw";
+    popupContainer.style.display = "none";
+    popupContainer.style.justifyContent = "center";
+    popupContainer.style.alignItems = "center";
+    popupContainer.style.zIndex = "1051";
+    popupContainer.appendChild(popup);
+    popupContainer.appendChild(popupClose);
+
+    document.body.append(popupContainer);
+
     if(scroller){
         let title = document.getElementsByClassName(TITLE_CL)[0];
         let artist = document.getElementsByClassName(ARTIST_CL)[0].children[1].children[0];
@@ -95,16 +135,14 @@
             for(let i=0; i<pageNum; i++){
                 sheets.push(await getSheetURL(i));
             }
-            for(let i=0; i<sheets.length; i++){
-                let dataURL = await getSheetDataURL(sheets[i], "png");
-                console.log(dataURL);
-            }
 
             if(dldBtn){
                 let hBtn = document.createElement("button");
                 hBtn.className = DLD_BTN_CL;
                 hBtn.innerHTML = dldBtn.innerHTML;
-                hBtn.onclick = () => console.log(sheets);
+                hBtn.onclick = () => {
+                    popupContainer.style.display = "flex";
+                };
 
                 dldSection.replaceChild(hBtn, dldBtn);
             }
