@@ -61,6 +61,8 @@ const docKit = new PDFDocument({compress: false, size:"A4"});
 // check if score is already in local storage based on score ID
 
 browser.tabs.insertCSS({file: "dld-menu.css"});
+browser.tabs.insertCSS({file: "gicons.css"});
+browser.tabs.insertCSS({file: "simplebar.css"});
 browser.tabs.query({active: true, currentWindow: true})
     .then((tabs) => {
         browser.tabs.get(tabs[0].id)
@@ -174,9 +176,9 @@ browser.tabs.query({active: true, currentWindow: true})
                             showScreen("load", false);
                         } else {
                             showScreen("scan", true);
-                            browser.tabs
-                                .executeScript({ file: "/content-scripts/musescore-dld-main.js" })
-                                .catch((error) => showErrorMsg("Script Error", error.message));
+                            // browser.tabs
+                            //     .executeScript({ file: "/content-scripts/musescore-dld-main.js" })
+                            //     .catch((error) => showErrorMsg("Script Error", error.message));
                         
                             browser.runtime.onMessage.addListener((msg) => {
                                 if(msg.command == "page-info"){

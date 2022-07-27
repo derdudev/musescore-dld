@@ -22,5 +22,14 @@
         "default_popup": "popup/dld-menu.html"
     },
 
+    "content_scripts": [
+        {
+            "matches": ["*://*.musescore.com/*/*"],
+            "js": ["/content-scripts/musescore-dld-main.js"],
+            "css": ["/popup/gicons.css", "/popup/dld-menu.css"],
+            "run_at": "document_idle"
+        }
+    ],
+
     "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net https://bundle.run; object-src 'self'"
 }

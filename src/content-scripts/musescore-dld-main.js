@@ -31,14 +31,13 @@
             <div class="tag-content" id="title">${title}</div>
             <div class="tag-content" id="artist">${artist}</div>
             <div class="tag-content" id="page-num">${pageNum}</div>
-            <div class="tag-content" id="file-name">${title + " - " + artist + ".pdf"}</div>
+            <div class="tag-content" id="file-name">${artist + " - " + title + ".pdf"}</div>
         </div>
     </div>
     <div id="page-content"></div>
     <div class="btn-container">
-        <div class="unactive" id="dld-html-btn">HTML</div>
-        <div class="unactive" id="dld-pdf-btn">PDF</div>
-        <div class="unactive" id="print-btn"><span class="material-symbols-outlined" style="font-size: 14px;">print</span></div>
+        <div id="dld-html-btn">Download (PDF)</div>
+        <div id="print-btn"><span class="material-symbols-outlined" style="font-size: 18px;">print</span></div>
     </div>
     <div id="message"></div>
     `
@@ -55,6 +54,7 @@
     popupContainer.appendChild(popupClose);
 
     document.body.append(popupContainer);
+    const pageContent = document.getElementById("page-content");
 
     if(scroller){
         let info = {
@@ -133,8 +133,15 @@
             // all following sheets over API
 
             let sheets = [];
+            let currentSheet = "";
+            let img;
             for(let i=0; i<pageNum; i++){
-                sheets.push(await getSheetURL(i));
+                currentSheet = await getSheetURL(i);
+                sheets.push(currentSheet);
+                img = document.createElement("img");
+                img.src = currentSheet;
+                img.className = "sheet";
+                pageContent.appendChild(img);
             }
 
             if(dldBtn){
