@@ -13,7 +13,8 @@
         "tabs",
         "unlimitedStorage",
         "storage",
-        "downloads"
+        "downloads",
+        "https://msdld.mertz-es.de/"
     ],
 
     "browser_action": {

@@ -168,21 +168,44 @@
 
 /* BUTTONS */
 #print-btn {
-    padding: 5px 10px;
-    font-size: 20px !important;
+  padding: 5px 10px;
+  font-size: 20px !important;
 }
 
 /* SCROLLBAR */
-#page-content{
-    scrollbar-color: #5d6776 #1A202C;
+#page-content {
+  scrollbar-color: #5d6776 #1a202c;
 }
 
 /* SHEETS */
-.sheet::after{
-    content: "1";
-    position: relative;
-    bottom: 5px;
-    right: 5px;
-    background-color: #5d6776;
-    padding: 2px;
+.sheet::after {
+  content: "1";
+  position: relative;
+  bottom: 5px;
+  right: 5px;
+  background-color: #5d6776;
+  padding: 2px;
+}
+
+/* USER LOG  */
+.log-msg {
+  color: #e53e3e;
+  font-family: "Roboto Mono";
+  font-size: 10px;
+}
+
+#user-log{
+    margin-bottom: 20px;
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+/* DLD BUTTONS  */
+#dld-btn {
+  background-color: #2e68c0;
+  border-radius: 5px;
+  width: fit-content;
+  padding: 10px 20px;
+  text-align: center;
+  cursor: pointer;
 }
