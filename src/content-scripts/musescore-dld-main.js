@@ -1,8 +1,5 @@
-const initJsLibs = () => {
-    
-}
-
-const SCROLLER_ID = "jmuse-scroller-component";
+try {
+    const SCROLLER_ID = "jmuse-scroller-component";
 const TITLE_CL = "C4LKv DIiWA Pz1rt";
 const ARTIST_CL = "ASx44 AJXCt Bz0hi g1QZl";
 const DLD_BTN_ID = "9eb7dc50a34f5b5c1cff5f66d2e17b0b";
@@ -11,6 +8,8 @@ const DLD_SEC_CL = "lPCDt oJw2k UvTPO XyPHW g1QZl eDGkx";
 
 let sheets = [];
 let sheetsDataURLs = [];
+let fileType = "";
+const scoreID = window.location.href.match(/(?<=https:\/\/musescore\.com\/user\/.*\/scores\/).*/)[0];
 
 let scroller = document.getElementById(SCROLLER_ID);
 let title = document.getElementsByClassName(TITLE_CL)[0].innerText;
@@ -92,9 +91,22 @@ pDldBtn.onclick = async () => {
     logToUser(`Downloading ${pageNum} pages...`);
 
     for(let i=0; i<pageNum; i++){
-        sheetsDataURLs[i] = await getSheetDataURL(sheets[i], "png");
+        logToUser(`Downloading page ${i+1} of ${pageNum}...`)
+        sheetsDataURLs[i] = await getSheetDataURL(sheets[i], fileType);;
     }
-    console.log(sheetsDataURLs);
+    logToUser(`Creating PDF...`)
+    browser.runtime.sendMessage({
+        command: "download",
+        data: JSON.stringify({
+            info: {
+                title: title,
+                artist: artist
+            }, 
+            type: "pdf",
+            fileType: fileType,
+            urls: sheetsDataURLs
+        })
+    })    
 }
 
 if(scroller){
@@ -103,11 +115,6 @@ if(scroller){
         artist: artist.innerText,
         pages: pageNum
     }
-
-    browser.runtime.sendMessage({
-        command: "page-info",
-        data: info
-    });
 
     const pages = [];
     for(let i=0; i<scroller.children.length-2; i++){
@@ -127,32 +134,13 @@ if(scroller){
         lastPage = scroller.children[lastPageIndex];
     }
 
-    const sendToEx = () => {
-        const msgData = [];
-
-        for(let j=0; j<=lastPageIndex; j++){
-            msgData.push(pages[j].src);
-        }
-
-        browser.runtime.sendMessage({
-            command: "pages",
-            data: JSON.stringify({
-                info: info, 
-                // TODO: send sheets individually to allow loading progress
-                sheets: msgData
-            })
-        });
-    }
-
     const getSheetURL = async (index) => {
-        return fetch(`https://musescore.com/api/jmuse?id=769686&index=${index}&type=img&v2=1`, {
+        return fetch(`https://musescore.com/api/jmuse?id=${scoreID}&index=${index}&type=img&v2=1`, {
             headers: {
                 "Authorization": "8c022bdef45341074ce876ae57a48f64b86cdcf5"
             }
         }).then(r => r.json())
-        .then(r => {
-            return r.info.url
-        });
+        .then(r => r.info.url);
     }
 
     // const getSheetDataURL = async (url, fileType) => {
@@ -182,6 +170,11 @@ if(scroller){
             img.src = currentSheet;
             img.className = "sheet";
             pageContent.appendChild(img);
+
+            if(i==0) {
+                fileType = currentSheet.match(/(?<=https:\/\/s3\.ultimate-guitar\.com\/musescore\.scoredata\/g\/.+\/score_0\.).{3}/)[0];
+                console.log(fileType);
+            }
         }
 
         if(dldBtn){
@@ -198,4 +191,7 @@ if(scroller){
         if(sheets) pDldBtn.classList = "";
     }
     crawlSheets();
+}
+} catch (e) {
+    console.error(e);
 }
