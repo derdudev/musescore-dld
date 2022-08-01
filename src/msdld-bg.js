@@ -1,5 +1,5 @@
 const downloadFile = (info, type, objectURL) => {
-    browser.downloads.download({url: objectURL, filename: info.artist + " - " + info.title + ((type == "html") ? ".html" : ".pdf")});
+    browser.downloads.download({url: objectURL, filename: (info.artist) ? info.artist + " - " + info.title + ((type == "html") ? ".html" : ".pdf") : info.title + ".pdf"});
 
     browser.downloads.onChanged.addListener(({state})=>{
         // message.innerHTML = state.current;
