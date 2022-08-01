@@ -1,5 +1,5 @@
 const downloadFile = (info, type, objectURL) => {
-    browser.downloads.download({url: objectURL, filename: info.title + " - " + info.artist + ((type == "html") ? ".html" : ".pdf")});
+    browser.downloads.download({url: objectURL, filename: info.artist + " - " + info.title + ((type == "html") ? ".html" : ".pdf")});
 
     browser.downloads.onChanged.addListener(({state})=>{
         // message.innerHTML = state.current;
@@ -8,7 +8,7 @@ const downloadFile = (info, type, objectURL) => {
 }
 
 // https://stackoverflow.com/questions/5913338/embedding-svg-in-pdf-exporting-svg-to-pdf-using-js
-const docKit = new PDFDocument({compress: false, size:"A4"});
+let docKit = new PDFDocument({compress: false, size:"A4"});
 
 browser.runtime.onMessage.addListener(msg => {
     if(msg.command == "download"){
@@ -45,8 +45,17 @@ browser.runtime.onMessage.addListener(msg => {
             stream.on('finish', async () => {
                 let blob = stream.toBlob('application/pdf');
                 downloadFile(data.info, data.type, URL.createObjectURL(blob));
+                browser.tabs.query({active: true, currentWindow: true}) // tabs id is required to send msg !
+                    .then(tabs => {
+                        browser.tabs.sendMessage(tabs[0].id, {
+                            command: "dldSucc",
+                            data: ""
+                        })
+                    })
+                
             });
             docKit.end();
+            docKit = new PDFDocument({compress: false, size:"A4"}); // new instance for new stream!
         })();
     }
 })

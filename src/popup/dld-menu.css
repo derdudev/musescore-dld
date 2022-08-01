@@ -178,18 +178,18 @@
 }
 
 /* SHEETS */
-.sheet::after {
-  content: "1";
+.sheet-container::after {
+  content: attr(page-num);
   position: relative;
-  bottom: 5px;
-  right: 5px;
-  background-color: #5d6776;
-  padding: 2px;
+  bottom: 40px;
+  left: 10px;
+  background-color: #5d6776cc;
+  padding: 5px 10px;
+  border-radius: 5px;
 }
 
 /* USER LOG  */
 .log-msg {
-  color: #e53e3e;
   font-family: "Roboto Mono";
   font-size: 10px;
 }
