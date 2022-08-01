@@ -101,18 +101,27 @@ try {
             })
     }
 
+    // https://stackoverflow.com/questions/2219526/how-many-bytes-in-a-javascript-string#12205668
+    function byteCount(s) {
+        return encodeURI(s).split(/%..|./).length - 1;
+    }
+
     const pDldBtn = document.getElementById("dld-btn"); // extension popup dld button
     pDldBtn.className = "unactive";
     pDldBtn.onclick = async () => {
         logToUser("PDF Download initiated...");
         logToUser(`Downloading ${pageNum} pages...`);
 
+        let currentSheetURL;
+        let completeString;
         for(let i=0; i<pageNum; i++){
             logToUser(`Downloading page ${i+1} of ${pageNum}...`);
-            sheetsDataURLs[i] = await getSheetDataURL(sheets[i], fileType);
+            currentSheetURL = await getSheetDataURL(sheets[i], fileType)
+            sheetsDataURLs[i] = currentSheetURL;
+            completeString += currentSheetURL;
             logToUser(`Download of page ${i+1} of ${pageNum} complete.`, "success");
         }
-        logToUser(`Creating PDF...`);
+        logToUser("Estimated download time: " + Math.floor(byteCount(completeString)/99333) + " seconds");
         browser.runtime.sendMessage({
             command: "download",
             data: JSON.stringify({
@@ -137,12 +146,21 @@ try {
             counter += 2;
         }, 2000);
         browser.runtime.onMessage.addListener(msg => {
-            console.log(msg);
             if(msg.command == "dldSucc") {
                 logToUser("PDF file was successfully created.", "success");
                 clearInterval(interval);
                 if(counter >= 30) logToUser(`Wow, this was a T H I C C boi.`, "warning");
                 counter = 0;
+            } else if (msg.command == "received") {
+                logToUser("Getting together the tools for building this bad boi...", "warning");
+            } else if (msg.command == "addingPage") {
+                logToUser(`Adding page ${msg.pageNum +" of "+pageNum} to PDF...`);
+            } else if (msg.command == "addedPage") {
+                logToUser(`Successfully added page ${msg.pageNum +" of "+pageNum} to PDF.`, "success");
+            } else if (msg.command == "backendError"){
+                logToUser("Backend Error: " + msg.error, "error");
+                clearInterval(interval);
+                throw new Error("Backend Error: " + msg.error);
             }
         })    
     }
