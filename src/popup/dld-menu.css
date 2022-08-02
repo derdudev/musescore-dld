@@ -178,11 +178,17 @@
 }
 
 /* SHEETS */
+/* see here https://stackoverflow.com/questions/19415641/how-to-position-before-after-pseudo-elements-on-top-of-each-other */
+.sheet-container{
+  position: relative;
+  display: inline-block;
+}
+
 .sheet-container::after {
   content: attr(page-num);
-  position: relative;
-  bottom: 40px;
-  left: 10px;
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
   background-color: #5d6776cc;
   padding: 5px 10px;
   border-radius: 5px;

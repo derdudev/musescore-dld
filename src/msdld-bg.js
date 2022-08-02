@@ -19,7 +19,7 @@ try {
                     browser.tabs.sendMessage(tabs[0].id, {
                         command: "received",
                     })
-                    dd
+                    
                     
                     let data = JSON.parse(msg.data);
         

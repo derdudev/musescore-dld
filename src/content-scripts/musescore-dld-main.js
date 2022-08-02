@@ -11,6 +11,7 @@ try {
     let fileType = "";
     let scoreID = (window.location.href.match(/(?<=https:\/\/musescore\.com\/user\/.*\/scores\/).*/) || window.location.href.match(/(?<=https:\/\/musescore\.com\/.*\/scores\/).*/))[0];
     let scroller = document.getElementById(SCROLLER_ID);
+    console.log(scroller);
     let title, artist;
     if(document.getElementsByClassName(TITLE_CL)[0]){
         title = document.getElementsByClassName(TITLE_CL)[0].innerText;
@@ -121,7 +122,8 @@ try {
             completeString += currentSheetURL;
             logToUser(`Download of page ${i+1} of ${pageNum} complete.`, "success");
         }
-        logToUser("Estimated download time: " + Math.floor(byteCount(completeString)/99333) + " seconds");
+        let estimatedDldTime = Math.floor(byteCount(completeString)/99333);
+        logToUser("Estimated download time: " + estimatedDldTime + " seconds");
         browser.runtime.sendMessage({
             command: "download",
             data: JSON.stringify({
@@ -137,13 +139,17 @@ try {
         let counter = 2;
         let interval = setInterval(() => {
             logToUser(`Bear with us, the download is progressing... ${"(" + counter + "s passed)"}`);
-            if(counter == 16) logToUser(`This is taking a little longer but nothing to worry about.`, "warning");
-            else if (counter == 26) logToUser(`Still going - must be a huge file. And YOU still got the brains to play it tho, amazing!`, "warning");
-            else if (counter == 36) logToUser(`Mmh, this really is taking its time, isnt it?`, "warning");
-            else if (counter == 46) logToUser(`And here we are, having waited 10 more seconds. What a life!`, "warning");
-            else if (counter == 56) logToUser(`Now its getting kind of embarrasing. This takes for ever! Anyway, let's blame the internet!`, "warning");
-            else if (counter == 66) logToUser(`This is the point at which you should head to Twitter and cancel this downloader. It's probably racist too!`, "warning");
-            counter += 2;
+            if(counter < estimatedDldTime+10) {
+                if(counter == 16) logToUser(`This is taking a little longer but nothing to worry about.`, "warning");
+                else if (counter == 26) logToUser(`Still going - must be a huge file. And YOU still got the brains to play it tho, amazing!`, "warning");
+                else if (counter == 36) logToUser(`Mmh, this really is taking its time, isnt it?`, "warning");
+                else if (counter == 46) logToUser(`And here we are, having waited 10 more seconds. What a life!`, "warning");
+                else if (counter == 56) logToUser(`Now its getting kind of embarrasing. This takes for ever! Anyway, let's blame the internet!`, "warning");
+                else if (counter == 66) logToUser(`This is the point at which you should head to Twitter and cancel this downloader. It's probably racist too!`, "warning");
+                counter += 2;
+            } else {
+                logToUser(`Download TIMEOUT. Estimated download time: ${estimatedDldTime}s | Process interupted at ${counter}s`)
+            }
         }, 2000);
         browser.runtime.onMessage.addListener(msg => {
             if(msg.command == "dldSucc") {
@@ -204,7 +210,7 @@ try {
                     img = document.createElement("img");
                     img.src = currentSheet;
                     img.className = "sheet";
-                    imgContainer = document.createElement("span");
+                    imgContainer = document.createElement("div");
                     imgContainer.className = "sheet-container";
                     imgContainer.setAttribute("page-num", i+1);
                     imgContainer.appendChild(img);
