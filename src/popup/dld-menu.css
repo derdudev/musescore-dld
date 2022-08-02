@@ -170,6 +170,9 @@
 #print-btn {
   padding: 5px 10px;
   font-size: 20px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* SCROLLBAR */
@@ -214,4 +217,19 @@
   padding: 10px 20px;
   text-align: center;
   cursor: pointer;
+}
+
+/* SMALL POPUP */
+.sm-popup{
+  padding: 10px 20px;
+  background-color: #1a202c;
+  border-radius: 5px;
+  color: #fff;
+  font-family: "Inter";
+
+  position: sticky;
+  bottom: 50px;
+  left: 50px;
+
+  width: fit-content;
 }
