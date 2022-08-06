@@ -30,7 +30,8 @@
 #page-content {
   height: fit-content;
   max-height: 200px;
-  width: fit-content;
+  width: 100%;
+  /* width: fit-content; */
   max-width: 100%;
   margin-bottom: 10px;
   background-color: #ffffff50;
@@ -232,4 +233,6 @@
   left: 50px;
 
   width: fit-content;
+
+  box-shadow: #1a202c 0 0 10px;
 }
