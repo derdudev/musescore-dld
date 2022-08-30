@@ -7,5 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "derdu",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "body-parser": "^1.20.0",
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.18.1",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "pdfkit": "^0.13.0",
+    "svg-to-pdfkit": "^0.1.8",
+    "svgson": "^5.2.1"
+  }
 }
