@@ -88,9 +88,7 @@ app.post("/pdf", async (req, res) => {
     }
 
     // https://stackoverflow.com/questions/51063253/how-to-send-buffer-data-in-express
-    res.writeHead(200, [
-        ['Content-Type', 'application/pdf']
-    ]);
+    res.writeHead(200, {'Content-Type': 'application/pdf'});
     // in pdfkit documentation: https://pdfkit.org/docs/getting_started.html#:~:text=write%20to%20PDF-,doc.pipe(res)%3B,-//%20HTTP%20response
     docKit.pipe(res);
 

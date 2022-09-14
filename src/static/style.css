@@ -66,3 +66,12 @@ h1 {
     cursor: pointer;
     background-color: #404D67;
 }
+
+@media screen and (max-width: 630px){
+    .content-container{
+        width: 75vw;
+    }
+    .dld-btn{
+        padding: 7px 20px;
+    }
+}
